@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Memory Beat — הגדרות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Orbitron:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<main class="app">
+  <div class="card">
+
+    <section class="screen screen--settings">
+      <h2 class="screen-title">הגדרות</h2>
+
+      <div class="setting-row">
+        <span class="setting-label">צליל</span>
+        <button class="switch is-on" id="sound-switch" type="button" role="switch" aria-checked="true" aria-label="צליל">
+          <span class="switch__knob"></span>
+        </button>
+      </div>
+
+      <div class="setting-block">
+        <div class="setting-label">רמת קושי</div>
+        <div class="segmented" id="difficulty-group">
+          <button class="segmented__btn" data-difficulty="easy" type="button">קל</button>
+          <button class="segmented__btn is-selected" data-difficulty="normal" type="button">רגיל</button>
+          <button class="segmented__btn" data-difficulty="hard" type="button">קשה</button>
+        </div>
+      </div>
+
+      <a class="btn btn--dark btn--back" href="index.html">חזרה</a>
+    </section>
+
+  </div>
+</main>
+
+<script src="js/storage.js"></script>
+<script src="js/settings.js"></script>
+</body>
+</html>

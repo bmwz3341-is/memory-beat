@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Memory Beat</title>
+<!--
+  Note on Hebrew text: the source design-handoff files (README.md,
+  memory_beat_gui.html) had corrupted/garbled Hebrew text (mojibake).
+  The strings below are reconstructed from context (e.g. "שלב" = level,
+  "הגדרות" = settings). Swap them for the exact original copy if needed.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Orbitron:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<main class="app">
+  <div class="card">
+
+    <!-- Board screen — doubles as home. No separate home screen exists. -->
+    <section class="screen screen--board">
+      <h1 class="brand">
+        <span style="color:#1f6fb2">M</span><span style="color:#e0402c">E</span><span style="color:#e8b923">M</span><span style="color:#2b8a3e">O</span><span style="color:#1f6fb2">R</span><span style="color:#e0402c">Y</span><span> </span><span style="color:#e8b923">B</span><span style="color:#2b8a3e">E</span><span style="color:#1f6fb2">A</span><span style="color:#e0402c">T</span>
+      </h1>
+
+      <div class="header-row">
+        <div class="level-stack">
+          <button class="profile-chip" id="btn-profile" type="button" aria-label="הפרופיל שלי">
+            <span class="profile-avatar" id="profile-avatar-display">👤</span>
+            <span class="profile-name" id="profile-name-display"></span>
+          </button>
+          <div class="level-label">שלב <span id="level-value">0</span></div>
+        </div>
+        <div class="settings-stack">
+          <a class="icon-btn" href="settings.html" aria-label="הגדרות">⚙️</a>
+          <a class="icon-btn" href="leaderboard.html" aria-label="טבלת תוצאות">🏆</a>
+        </div>
+      </div>
+
+      <div class="board-wrap">
+        <div class="board" id="board">
+          <div class="pads">
+            <button class="pad pad--blue" data-color="blue" type="button" aria-label="כחול"></button>
+            <button class="pad pad--red" data-color="red" type="button" aria-label="אדום"></button>
+            <button class="pad pad--green" data-color="green" type="button" aria-label="ירוק"></button>
+            <button class="pad pad--yellow" data-color="yellow" type="button" aria-label="צהוב"></button>
+          </div>
+          <div class="divider divider--h"></div>
+          <div class="divider divider--v"></div>
+          <div class="center-hub">
+            <span class="hub-title">BEEP</span>
+            <span class="hub-score" id="score-value">0</span>
+          </div>
+
+          <!-- Loss overlay: clipped to the circular board, not a separate screen -->
+          <div class="game-over" id="game-over" hidden>
+            <div class="game-over__title">נגמר המשחק!</div>
+            <div class="game-over__stats">
+              <div class="game-over__score">ניקוד: <b id="final-score">0</b></div>
+              <div class="game-over__best">שיא: <span id="final-best">0</span></div>
+            </div>
+            <button class="btn btn--primary btn--play-again" id="btn-play-again" type="button">שחק שוב</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn--primary" id="btn-play" type="button">PLAY</button>
+        <button class="btn btn--secondary" id="btn-reset" type="button">RESET</button>
+      </div>
+
+      <div class="turn-caption" id="turn-caption" hidden>תורך!</div>
+    </section>
+
+    <!-- Profile setup: forced on first visit (no close button until a player exists) -->
+    <div class="profile-modal" id="profile-modal" hidden>
+      <div class="profile-modal__panel">
+        <button class="profile-modal__close" id="profile-modal-close" type="button" aria-label="סגור" hidden>✕</button>
+        <h2 class="screen-title">בחר/י דמות ושם</h2>
+
+        <div class="avatar-grid" id="avatar-grid">
+          <button class="avatar-option" data-avatar="🦁" type="button" aria-label="אריה">🦁</button>
+          <button class="avatar-option" data-avatar="🐵" type="button" aria-label="קוף">🐵</button>
+          <button class="avatar-option" data-avatar="🐸" type="button" aria-label="צפרדע">🐸</button>
+          <button class="avatar-option" data-avatar="🦊" type="button" aria-label="שועל">🦊</button>
+          <button class="avatar-option" data-avatar="🐼" type="button" aria-label="פנדה">🐼</button>
+          <button class="avatar-option" data-avatar="🐯" type="button" aria-label="נמר">🐯</button>
+        </div>
+
+        <input class="profile-modal__input" id="profile-name-input" type="text" placeholder="השם שלך" maxlength="16" />
+
+        <button class="btn btn--primary profile-modal__save" id="profile-save" type="button" disabled>שמור</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="js/storage.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/board.js"></script>
+</body>
+</html>
