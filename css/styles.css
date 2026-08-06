@@ -28,6 +28,7 @@
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,6 +50,22 @@ body {
   font-family: var(--font-heading);
 }
 
+/* On an actual phone the desktop "mockup frame" (outer padding + border)
+   pushes the card past the real viewport, forcing a scroll to see the
+   rest of the home screen. Below ~480px, drop the frame and let the card
+   fill the real, dynamic viewport exactly instead. */
+@media (max-width: 480px) {
+  .app { width: 100%; padding: 0; }
+  .card {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
 .screen {
   height: 100%;
   display: flex;
@@ -58,13 +75,22 @@ body {
 /* ===================== Board screen ===================== */
 
 .brand {
-  margin: 0;
+  width: fit-content;
+  margin: 18px auto 0;
   text-align: center;
-  padding-top: 18px;
+  padding: 10px 24px;
   font-family: var(--font-heading);
   font-weight: 800;
   font-size: 24px;
   letter-spacing: 0.08em;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .header-row {
@@ -92,7 +118,7 @@ body {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 19px;
+  font-size: 28px;
   cursor: pointer;
   line-height: 1;
   padding: 0;
@@ -101,13 +127,19 @@ body {
 }
 
 .profile-chip {
-  background: none;
-  border: none;
   cursor: pointer;
-  padding: 0;
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: 6px 14px 6px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 6px 16px rgba(0, 0, 0, 0.08);
 }
 .profile-avatar {
   font-size: 32px;
