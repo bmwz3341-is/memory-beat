@@ -8,11 +8,11 @@
   'use strict';
 
   const placeholderData = [
-    { name: 'דניאל', score: 42 },
-    { name: 'נועה', score: 37 },
-    { name: 'מאיה', score: 31 },
-    { name: 'יובל', score: 28 },
-    { name: 'עומר', score: 22 },
+    { name: 'דניאל', level: 5, score: 42 },
+    { name: 'נועה', level: 4, score: 37 },
+    { name: 'מאיה', level: 4, score: 31 },
+    { name: 'יובל', level: 3, score: 28 },
+    { name: 'עומר', level: 3, score: 22 },
   ];
 
   const el = {
@@ -34,6 +34,7 @@
         return `
           <div class="table__row ${stripe}">
             <div class="table__cell">${escapeHtml(row.name)}</div>
+            <div class="table__cell">${row.level}</div>
             <div class="table__cell table__cell--score">${row.score}</div>
           </div>`;
       })
@@ -49,7 +50,8 @@
   const player = window.MemoryBeatStorage.getPlayer();
   const best = window.MemoryBeatStorage.getBest();
   if (player && best > 0) {
-    rows.push({ name: `${player.avatar} ${player.name}`, score: best });
+    const bestLevel = window.MemoryBeatStorage.getBestLevel();
+    rows.push({ name: `${player.avatar} ${player.name}`, level: bestLevel, score: best });
   }
   rows.sort((a, b) => b.score - a.score);
 

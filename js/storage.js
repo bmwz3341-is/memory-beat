@@ -9,6 +9,7 @@ window.MemoryBeatStorage = (function () {
     sound: 'memoryBeat.sound',
     difficulty: 'memoryBeat.difficulty',
     best: 'memoryBeat.best',
+    bestLevel: 'memoryBeat.bestLevel',
     player: 'memoryBeat.player',
   };
 
@@ -36,6 +37,14 @@ window.MemoryBeatStorage = (function () {
     localStorage.setItem(KEYS.best, String(score));
   }
 
+  function getBestLevel() {
+    const v = parseInt(localStorage.getItem(KEYS.bestLevel), 10);
+    return Number.isFinite(v) ? v : 0;
+  }
+  function setBestLevel(level) {
+    localStorage.setItem(KEYS.bestLevel, String(level));
+  }
+
   function getPlayer() {
     try {
       const parsed = JSON.parse(localStorage.getItem(KEYS.player));
@@ -52,6 +61,7 @@ window.MemoryBeatStorage = (function () {
     getSound, setSound,
     getDifficulty, setDifficulty,
     getBest, setBest,
+    getBestLevel, setBestLevel,
     getPlayer, setPlayer,
   };
 })();

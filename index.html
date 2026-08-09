@@ -12,7 +12,7 @@
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Orbitron:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -21,9 +21,13 @@
 
     <!-- Board screen — doubles as home. No separate home screen exists. -->
     <section class="screen screen--board">
-      <h1 class="brand">
-        <span style="color:#1f6fb2">M</span><span style="color:#e0402c">E</span><span style="color:#e8b923">M</span><span style="color:#2b8a3e">O</span><span style="color:#1f6fb2">R</span><span style="color:#e0402c">Y</span><span> </span><span style="color:#e8b923">B</span><span style="color:#2b8a3e">E</span><span style="color:#1f6fb2">A</span><span style="color:#e0402c">T</span>
-      </h1>
+      <div class="title-row">
+        <span class="title-row__spacer" aria-hidden="true"></span>
+        <h1 class="brand">
+          <span style="color:#1f6fb2">M</span><span style="color:#e0402c">E</span><span style="color:#e8b923">M</span><span style="color:#2b8a3e">O</span><span style="color:#1f6fb2">R</span><span style="color:#e0402c">Y</span><span> </span><span style="color:#e8b923">B</span><span style="color:#2b8a3e">E</span><span style="color:#1f6fb2">A</span><span style="color:#e0402c">T</span>
+        </h1>
+        <a class="icon-btn title-row__settings" href="settings.html" aria-label="הגדרות">⚙️</a>
+      </div>
 
       <div class="header-row">
         <div class="level-stack">
@@ -31,11 +35,11 @@
             <span class="profile-avatar" id="profile-avatar-display">👤</span>
             <span class="profile-name" id="profile-name-display"></span>
           </button>
-          <div class="level-label">שלב <span id="level-value">0</span></div>
+          <div class="level-label" id="level-label" hidden>שלב <span id="level-value">0</span></div>
         </div>
         <div class="settings-stack">
-          <a class="icon-btn" href="settings.html" aria-label="הגדרות">⚙️</a>
           <a class="icon-btn" href="leaderboard.html" aria-label="טבלת תוצאות">🏆</a>
+          <button class="icon-btn--info" id="btn-rules" type="button" aria-label="חוקי ניקוד">?</button>
         </div>
       </div>
 
@@ -103,12 +107,27 @@
       </div>
     </div>
 
+    <!-- Scoring rules explainer, opened from the "?" icon (visible during play only) -->
+    <div class="profile-modal" id="rules-modal" hidden>
+      <div class="profile-modal__panel">
+        <button class="profile-modal__close" id="rules-modal-close" type="button" aria-label="סגור">✕</button>
+        <h2 class="screen-title">חוקי ניקוד</h2>
+        <ul class="rules-list">
+          <li>כל שלב שמושלם נכון מזכה ב-<b>10 נקודות × מספר השלב</b> — כך שכל שלב שווה יותר מהקודם.</li>
+          <li>רמת קושי מכפילה את הניקוד: קל × 1, רגיל × 1.25, קשה × 1.5.</li>
+          <li>חזרה על הרצף במהירות, לפני זמן הסף, מזכה ב<b>בונוס מהירות</b> נוסף על אותו שלב.</li>
+          <li>הקשה שגויה מסיימת את המשחק — והשיא נשמר לקראת הפעם הבאה.</li>
+        </ul>
+      </div>
+    </div>
+
   </div>
 </main>
 
 <script src="js/storage.js"></script>
 <script src="js/sound.js"></script>
 <script src="js/profile.js"></script>
+<script src="js/rules.js"></script>
 <script src="js/board.js"></script>
 </body>
 </html>

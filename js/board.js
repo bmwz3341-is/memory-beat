@@ -6,6 +6,13 @@
  * player to repeat it. A full correct repeat advances the level and starts
  * the next round; a wrong tap ends the game.
  *
+ * Scoring (see the "?" modal in index.html for the player-facing copy):
+ * each completed round scores BASE_PER_ROUND * level, scaled by a
+ * difficulty multiplier, plus a speed bonus if the round was repeated
+ * faster than FAST_MS_PER_TAP * level. Score is no longer a fixed multiple
+ * of level, so the level reached is persisted separately (best level) for
+ * the leaderboard rather than derived from the score.
+ *
  * Depends on js/storage.js (difficulty/sound/best) and js/sound.js
  * (per-pad tones), loaded before this file.
  */
@@ -23,6 +30,12 @@
     hard: { lit: 280, gap: 110 },
   };
 
+  const BASE_PER_ROUND = 10;
+  const DIFFICULTY_MULTIPLIER = { easy: 1, normal: 1.25, hard: 1.5 };
+  // How fast (ms per tap in the sequence) a repeat must be to earn the speed bonus.
+  const FAST_MS_PER_TAP = { easy: 900, normal: 650, hard: 450 };
+  const SPEED_BONUS_PER_LEVEL = 5;
+
   const state = {
     level: 0,
     score: 0,
@@ -30,6 +43,7 @@
   };
 
   const el = {
+    levelLabel: document.getElementById('level-label'),
     levelValue: document.getElementById('level-value'),
     scoreValue: document.getElementById('score-value'),
     pads: document.querySelectorAll('.pad'),
@@ -49,6 +63,7 @@
   // ---------------------------------------------------------------------
   function renderBoard() {
     el.levelValue.textContent = state.level;
+    el.levelLabel.hidden = !state.playing;
     el.scoreValue.textContent = state.score;
 
     el.btnPlay.disabled = state.playing;
@@ -90,6 +105,8 @@
   let playerIndex = 0;
   let acceptingInput = false;
   let pendingTimers = [];
+  let totalScore = 0;
+  let inputStartTime = 0;
 
   function after(ms, fn) {
     const id = window.setTimeout(fn, ms);
@@ -115,6 +132,7 @@
     el.pads.forEach((pad) => pad.classList.remove('is-lit'));
     window.MemoryBeatUI.hideGameOver();
     sequence = [];
+    totalScore = 0;
     window.MemoryBeatUI.setScore(0);
     nextRound();
   }
@@ -131,6 +149,7 @@
   function playSequenceStep(i) {
     if (i >= sequence.length) {
       acceptingInput = true;
+      inputStartTime = Date.now();
       return;
     }
     const { lit, gap } = TIMING[window.MemoryBeatStorage.getDifficulty()];
@@ -141,6 +160,16 @@
       setPadLit(color, false);
       after(gap, () => playSequenceStep(i + 1));
     });
+  }
+
+  function roundScore(level) {
+    const difficulty = window.MemoryBeatStorage.getDifficulty();
+    const multiplier = DIFFICULTY_MULTIPLIER[difficulty];
+    const elapsed = Date.now() - inputStartTime;
+    const isFast = elapsed <= FAST_MS_PER_TAP[difficulty] * level;
+    const base = BASE_PER_ROUND * level * multiplier;
+    const speedBonus = isFast ? SPEED_BONUS_PER_LEVEL * level * multiplier : 0;
+    return Math.round(base + speedBonus);
   }
 
   function onPadTap(color) {
@@ -157,7 +186,8 @@
       playerIndex++;
       if (playerIndex === sequence.length) {
         acceptingInput = false;
-        window.MemoryBeatUI.setScore(sequence.length * 10);
+        totalScore += roundScore(sequence.length);
+        window.MemoryBeatUI.setScore(totalScore);
         after(600, nextRound);
       }
       return;
@@ -172,8 +202,13 @@
     clearPendingTimers();
     window.MemoryBeatSound.playError();
     window.MemoryBeatUI.setPlaying(false);
-    const best = Math.max(state.score, window.MemoryBeatStorage.getBest());
+    const prevBest = window.MemoryBeatStorage.getBest();
+    const best = Math.max(state.score, prevBest);
     window.MemoryBeatStorage.setBest(best);
+    if (state.score >= prevBest) {
+      // Completed rounds = the level reached minus the one just failed.
+      window.MemoryBeatStorage.setBestLevel(Math.max(0, state.level - 1));
+    }
     window.MemoryBeatUI.showGameOver({ score: state.score, best });
   }
 
