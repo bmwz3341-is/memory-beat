@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Memory Beat</title>
 <!--
   Note on Hebrew text: the source design-handoff files (README.md,
@@ -24,7 +24,7 @@
       <div class="title-row">
         <span class="title-row__spacer" aria-hidden="true"></span>
         <h1 class="brand">
-          <span style="color:#1f6fb2">M</span><span style="color:#e0402c">E</span><span style="color:#e8b923">M</span><span style="color:#2b8a3e">O</span><span style="color:#1f6fb2">R</span><span style="color:#e0402c">Y</span><span> </span><span style="color:#e8b923">B</span><span style="color:#2b8a3e">E</span><span style="color:#1f6fb2">A</span><span style="color:#e0402c">T</span>
+          <span class="brand__letter--blue">M</span><span class="brand__letter--red">E</span><span class="brand__letter--yellow">M</span><span class="brand__letter--green">O</span><span class="brand__letter--blue">R</span><span class="brand__letter--red">Y</span><span> </span><span class="brand__letter--yellow">B</span><span class="brand__letter--green">E</span><span class="brand__letter--blue">A</span><span class="brand__letter--red">T</span>
         </h1>
         <a class="icon-btn title-row__settings" href="settings.html" aria-label="הגדרות">⚙️</a>
       </div>
@@ -124,6 +124,10 @@
   </div>
 </main>
 
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/firebase-init.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/sound.js"></script>
 <script src="js/profile.js"></script>

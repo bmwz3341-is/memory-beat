@@ -102,6 +102,10 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.8),
     0 6px 16px rgba(0, 0, 0, 0.08);
 }
+  .brand__letter--blue { color: #1f6fb2; }
+  .brand__letter--red { color: #e0402c; }
+  .brand__letter--yellow { color: #e8b923; }
+  .brand__letter--green { color: #2b8a3e; }
 
 .title-row {
   display: grid;
@@ -446,11 +450,16 @@ body {
 }
 
 .screen-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   margin: 0;
   font-size: 20px;
   font-weight: 800;
   color: var(--ink);
 }
+.screen--leaderboard .screen-title { color: var(--red); }
 
 .setting-row {
   display: flex;
@@ -524,7 +533,7 @@ body {
 }
 .table__row {
   display: grid;
-  grid-template-columns: 1fr 48px auto;
+  grid-template-columns: 1fr 68px 78px 48px 62px;
   font-family: var(--font-body);
 }
 .table__row--head {
@@ -546,8 +555,34 @@ body {
   color: var(--white);
   font-weight: 700;
 }
+.table__sort-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.table__sort-button::after {
+  content: ' ↕';
+  opacity: 0.7;
+}
+.table__sort-button[aria-pressed="true"]::after {
+  content: ' ↑';
+}
 .table__cell--score { font-weight: 700; }
-.table__row .table__cell:nth-child(2) { text-align: center; }
+.table__row .table__cell:nth-child(2),
+.table__row .table__cell:nth-child(3),
+.table__row .table__cell:nth-child(4) { text-align: center; }
+.table__status {
+  margin: 0;
+  padding: 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  text-align: center;
+  background: var(--white);
+}
 
 /* ===================== Profile setup modal ===================== */
 

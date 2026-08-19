@@ -1,0 +1,3 @@
+# Real Firebase config — holds a live project's API key, never commit it.
+# Copy js/firebase-config.example.js to js/firebase-config.js and fill it in.
+js/firebase-config.js

@@ -107,6 +107,8 @@
   let pendingTimers = [];
   let totalScore = 0;
   let inputStartTime = 0;
+  let gameStartTime = 0;
+  let gameDifficulty = 'normal';
 
   function after(ms, fn) {
     const id = window.setTimeout(fn, ms);
@@ -133,6 +135,8 @@
     window.MemoryBeatUI.hideGameOver();
     sequence = [];
     totalScore = 0;
+    gameStartTime = Date.now();
+    gameDifficulty = window.MemoryBeatStorage.getDifficulty();
     window.MemoryBeatUI.setScore(0);
     nextRound();
   }
@@ -204,10 +208,27 @@
     window.MemoryBeatUI.setPlaying(false);
     const prevBest = window.MemoryBeatStorage.getBest();
     const best = Math.max(state.score, prevBest);
+    const duration = Date.now() - gameStartTime;
     window.MemoryBeatStorage.setBest(best);
     if (state.score >= prevBest) {
       // Completed rounds = the level reached minus the one just failed.
-      window.MemoryBeatStorage.setBestLevel(Math.max(0, state.level - 1));
+      const bestLevel = Math.max(0, state.level - 1);
+      window.MemoryBeatStorage.setBestLevel(bestLevel);
+      window.MemoryBeatStorage.setBestDuration(duration);
+      window.MemoryBeatStorage.setBestDifficulty(gameDifficulty);
+
+      const player = window.MemoryBeatStorage.getPlayer();
+      if (player && window.MemoryBeatFirestore) {
+        window.MemoryBeatFirestore.saveScore({
+          playerId: window.MemoryBeatStorage.getPlayerId(),
+          name: player.name,
+          avatar: player.avatar,
+          score: best,
+          level: bestLevel,
+          duration,
+          difficulty: gameDifficulty,
+        }).catch((err) => console.error('Memory Beat: failed to save score to Firestore', err));
+      }
     }
     window.MemoryBeatUI.showGameOver({ score: state.score, best });
   }

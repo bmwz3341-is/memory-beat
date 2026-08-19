@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Memory Beat — טבלת תוצאות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,11 +14,21 @@
   <div class="card">
 
     <section class="screen screen--leaderboard">
-      <h2 class="screen-title">🏆 טבלת תוצאות</h2>
+      <h2 class="screen-title"><span>טבלת תוצאות</span><span aria-hidden="true">🏆</span></h2>
 
       <div class="table" id="leaderboard-table">
         <div class="table__row table__row--head">
           <div class="table__cell">שם</div>
+          <div class="table__cell">
+            <button class="table__sort-button" id="btn-filter-difficulty" type="button" aria-label="סינון לפי רמת הקושי" aria-pressed="false">
+              רמת קושי
+            </button>
+          </div>
+          <div class="table__cell">
+            <button class="table__sort-button" id="btn-filter-duration" type="button" aria-label="סינון לפי זמן המשחק" aria-pressed="false">
+              זמן המשחק
+            </button>
+          </div>
           <div class="table__cell">שלב</div>
           <div class="table__cell">ניקוד</div>
         </div>
@@ -31,6 +41,10 @@
   </div>
 </main>
 
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/firebase-init.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/leaderboard.js"></script>
 </body>
