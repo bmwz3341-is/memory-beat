@@ -31,19 +31,30 @@ window.MemoryBeatFirestore = (function () {
   const db = firebase.firestore(app);
   const scoresCollection = db.collection('memory-beat-scores');
 
-  // Upserts the player's high score, keyed by their per-device player id
-  // (see js/storage.js getPlayerId) so a later, better run overwrites the
-  // same row instead of adding a new one.
+  // Called after every game (not just ones that beat the player's local
+  // best — that's stored in localStorage, so it can drift from what's
+  // actually in Firestore, e.g. after clearing site data or switching
+  // devices). The write itself is the source of truth for "best": inside a
+  // transaction, it only overwrites the player's doc (keyed by their
+  // per-device player id, see js/storage.js getPlayerId) if this score is
+  // actually higher than what's already saved there, so a worse run can
+  // never downgrade an already-recorded high score.
   function saveScore({ playerId, name, avatar, score, level, duration, difficulty }) {
-    return scoresCollection.doc(playerId).set({
-      name,
-      avatar,
-      score,
-      level,
-      duration,
-      difficulty,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    const docRef = scoresCollection.doc(playerId);
+    return db.runTransaction((transaction) =>
+      transaction.get(docRef).then((doc) => {
+        if (doc.exists && doc.data().score >= score) return;
+        transaction.set(docRef, {
+          name,
+          avatar,
+          score,
+          level,
+          duration,
+          difficulty,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      })
+    );
   }
 
   // Fetches every player's saved score for the leaderboard table.

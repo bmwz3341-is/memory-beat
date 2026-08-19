@@ -209,27 +209,34 @@
     const prevBest = window.MemoryBeatStorage.getBest();
     const best = Math.max(state.score, prevBest);
     const duration = Date.now() - gameStartTime;
+    // Completed rounds = the level reached minus the one just failed.
+    const thisLevel = Math.max(0, state.level - 1);
     window.MemoryBeatStorage.setBest(best);
     if (state.score >= prevBest) {
-      // Completed rounds = the level reached minus the one just failed.
-      const bestLevel = Math.max(0, state.level - 1);
-      window.MemoryBeatStorage.setBestLevel(bestLevel);
+      window.MemoryBeatStorage.setBestLevel(thisLevel);
       window.MemoryBeatStorage.setBestDuration(duration);
       window.MemoryBeatStorage.setBestDifficulty(gameDifficulty);
-
-      const player = window.MemoryBeatStorage.getPlayer();
-      if (player && window.MemoryBeatFirestore) {
-        window.MemoryBeatFirestore.saveScore({
-          playerId: window.MemoryBeatStorage.getPlayerId(),
-          name: player.name,
-          avatar: player.avatar,
-          score: best,
-          level: bestLevel,
-          duration,
-          difficulty: gameDifficulty,
-        }).catch((err) => console.error('Memory Beat: failed to save score to Firestore', err));
-      }
     }
+
+    // Always attempt to sync this run to Firestore, not just when it beats
+    // the *locally* stored best — that local value can drift from what's
+    // actually saved online (cleared site data, a different device, etc.),
+    // which would otherwise silently block every future save. saveScore
+    // itself only keeps the higher of the two scores, so this can't
+    // downgrade an already-recorded online high score.
+    const player = window.MemoryBeatStorage.getPlayer();
+    if (player && window.MemoryBeatFirestore) {
+      window.MemoryBeatFirestore.saveScore({
+        playerId: window.MemoryBeatStorage.getPlayerId(),
+        name: player.name,
+        avatar: player.avatar,
+        score: state.score,
+        level: thisLevel,
+        duration,
+        difficulty: gameDifficulty,
+      }).catch((err) => console.error('Memory Beat: failed to save score to Firestore', err));
+    }
+
     window.MemoryBeatUI.showGameOver({ score: state.score, best });
   }
 
