@@ -1,25 +1,29 @@
 /**
  * Memory Beat — Firebase/Firestore initialization. Loaded (after the Firebase
- * compat CDN scripts and js/firebase-config.js) on any page that needs the
- * leaderboard database: index.html (writes the score on game over) and
- * leaderboard.html (reads all scores). Exposes window.MemoryBeatFirestore so
- * those pages can get a Firestore handle without each re-initializing the
- * app.
+ * compat CDN scripts, js/firebase-config.js, and /api/firebase-config.js) on
+ * any page that needs the leaderboard database: index.html (writes the score
+ * on game over) and leaderboard.html (reads all scores). Exposes
+ * window.MemoryBeatFirestore so those pages can get a Firestore handle
+ * without each re-initializing the app.
  *
- * The actual config values live in js/firebase-config.js, which is
- * gitignored (not committed) since it holds a live project's API key — see
- * js/firebase-config.example.js for the template new setups copy from.
- *
- * The Firebase project ("my-trivia-app-16d1e") is shared with other apps, so
- * all Memory Beat score documents live under their own top-level collection,
- * "memory-beat-scores", to avoid colliding with other apps' data.
+ * The actual config values come from window.MemoryBeatFirebaseConfig, set by
+ * whichever of these two scripts actually loads:
+ *  - js/firebase-config.js — gitignored, local-only file for opening
+ *    index.html directly with no server. See js/firebase-config.example.js
+ *    for the template.
+ *  - /api/firebase-config.js — a Vercel serverless function (api/firebase-
+ *    config.js) that reads the config from Vercel Environment Variables.
+ *    This is what production (https://memory-beat.vercel.app) actually
+ *    uses, since a git-based deploy never has the gitignored static file.
+ * It's loaded second so it wins in production; locally without `vercel dev`
+ * it 404s harmlessly and the static file's values are kept.
  */
 
 window.MemoryBeatFirestore = (function () {
   const firebaseConfig = window.MemoryBeatFirebaseConfig;
   if (!firebaseConfig) {
     throw new Error(
-      'Memory Beat: js/firebase-config.js is missing. Copy js/firebase-config.example.js to js/firebase-config.js and fill in your Firebase project config.'
+      'Memory Beat: no Firebase config found. For local dev, copy js/firebase-config.example.js to js/firebase-config.js and fill it in. For the Vercel deploy, set the FIREBASE_* environment variables in the Vercel project settings.'
     );
   }
 

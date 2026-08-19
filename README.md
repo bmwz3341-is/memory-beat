@@ -14,6 +14,19 @@
 
 לפני ההרצה יש להעתיק את `js/firebase-config.example.js` לקובץ `js/firebase-config.js` (מתעלמים ממנו ב-git) ולמלא בו את פרטי פרויקט ה-Firebase שלכם — אחרת טבלת התוצאות לא תעבוד.
 
+### פריסה (Vercel)
+
+האפליקציה בפרודקשן (https://memory-beat.vercel.app) רצה על Vercel, שפורסת ישירות מה-repo. מכיוון ש-`js/firebase-config.js` לא נשמר ב-git (ראו לעיל), הוא לא קיים בפריסה — במקומו יש פונקציית שרת קטנה, `api/firebase-config.js`, שמחזירה את ההגדרות מתוך **Environment Variables** שמוגדרים בפאנל הניהול של Vercel (Project Settings → Environment Variables), לא בקוד:
+
+- `FIREBASE_API_KEY`
+- `FIREBASE_AUTH_DOMAIN`
+- `FIREBASE_PROJECT_ID`
+- `FIREBASE_STORAGE_BUCKET`
+- `FIREBASE_MESSAGING_SENDER_ID`
+- `FIREBASE_APP_ID`
+
+בלי המשתנים האלה מוגדרים ב-Vercel, `/api/firebase-config.js` יחזיר הגדרות ריקות ו-`firebase-init.js` יזרוק שגיאה — בדיוק התקלה שקרתה כרגע. יש להגדיר אותם דרך ה-Dashboard של Vercel (אני לא יכול לגשת אליו) ואז לבצע Redeploy.
+
 ## מסכים
 
 - **`index.html`** — מסך הלוח, שהוא גם מסך הבית (אין מסך פתיחה נפרד). כולל את לוח ה-4 הפדים, ניקוד, שלב נוכחי, כפתורי PLAY/RESET, ומודל בחירת פרופיל (אווטאר + שם) שנפתח אוטומטית בכניסה ראשונה.
@@ -25,8 +38,9 @@
 ## מבנה קוד
 
 - `js/storage.js` — כל הגישה ל-`localStorage` (צליל, רמת קושי, שיא, פרופיל שחקן, ומזהה שחקן/ית קבוע למכשיר לצורך שמירה ב-Firestore). זה המקום היחיד שקורא/כותב למפתחות האלה, וגם `board.js` וגם `settings.js` משתמשים בו כדי לשמור על עקביות בין המסכים.
-- `js/firebase-init.js` — אתחול ה-SDK של Firestore (חבילת ה-compat, לא ES modules) וחשיפת `window.MemoryBeatFirestore` עם `saveScore`/`fetchScores`. כל השיאים נשמרים בקולקשן ייעודי, `memory-beat-scores`, כדי לא להתערבב עם אפליקציות אחרות שחולקות אותו פרויקט Firebase. נטען ב-`index.html` וב-`leaderboard.html`. קורא את ההגדרות מ-`window.MemoryBeatFirebaseConfig` (ראו `js/firebase-config.js` למטה) ולא כערכים קבועים בקוד.
-- `js/firebase-config.js` — פרטי פרויקט ה-Firebase האמיתיים (מכיל API key חי), מתעלמים ממנו ב-git ולא נשמר בהיסטוריה. מגדירים אותו בפעם הראשונה על ידי העתקת `js/firebase-config.example.js` (שכן נשמר ב-git, עם ערכי placeholder) ומילוי הערכים האמיתיים.
+- `js/firebase-init.js` — אתחול ה-SDK של Firestore (חבילת ה-compat, לא ES modules) וחשיפת `window.MemoryBeatFirestore` עם `saveScore`/`fetchScores`. כל השיאים נשמרים בקולקשן ייעודי, `memory-beat-scores`, כדי לא להתערבב עם אפליקציות אחרות שחולקות אותו פרויקט Firebase. נטען ב-`index.html` וב-`leaderboard.html`. קורא את ההגדרות מ-`window.MemoryBeatFirebaseConfig` (ראו שני המקורות למטה) ולא כערכים קבועים בקוד.
+- `js/firebase-config.js` — קובץ סטטי מקומי בלבד, מתעלמים ממנו ב-git, לפיתוח מקומי ללא שרת. מגדירים אותו בפעם הראשונה על ידי העתקת `js/firebase-config.example.js` (שכן נשמר ב-git, עם ערכי placeholder) ומילוי הערכים האמיתיים.
+- `api/firebase-config.js` — פונקציית שרת (serverless) של Vercel שמחזירה את אותן הגדרות, אך מתוך Environment Variables בפרודקשן (ראו "פריסה" למעלה) במקום קובץ בקוד. נטען אחרי `js/firebase-config.js` בשני העמודים, כך שהוא "מנצח" בפריסה בפועל.
 - `js/board.js` — מנוע המשחק ורינדור הלוח: בניית הרצף, ניגון הרצף עם תזמון לפי רמת קושי, קליטת הקשות השחקן/ית, עדכון שלב/ניקוד, סיום משחק ושמירת שיא חדש ל-Firestore.
 - `js/sound.js` — טוני Web Audio לכל פד ולשגיאה, בהתאם להגדרת הצליל.
 - `js/profile.js` — מודל בחירת אווטאר ושם; נפתח בכפייה כשאין פרופיל שמור, ונפתח מחדש (עם אפשרות סגירה) מהאייקון בלוח.
